@@ -1,0 +1,21 @@
+{
+  "name": "TravelWise — Travel smarter. Experience more.",
+  "short_name": "TravelWise",
+  "description": "Your intelligent travel companion for bespoke journeys, personalized itineraries, real-time trip assistant and curated discovery.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F5EF",
+  "theme_color": "#0B3D2E",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/travelwise-emblem.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

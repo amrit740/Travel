@@ -1,0 +1,280 @@
+<svg viewBox="0 0 1200 800" width="1200" height="800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Forest Green Gradient for T/W Monogram -->
+    <linearGradient id="twGreenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#0E4233" />
+      <stop offset="60%" stopColor="#0A3326" />
+      <stop offset="100%" stopColor="#062219" />
+    </linearGradient>
+
+    <!-- Warm Gold Gradient for Sun, Ribbon, WISE and accents -->
+    <linearGradient id="twGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#E2BF7D" />
+      <stop offset="45%" stopColor="#C9A65D" />
+      <stop offset="100%" stopColor="#9C7730" />
+    </linearGradient>
+
+    <radialGradient id="twSunGrad" cx="45%" cy="40%" r="55%">
+      <stop offset="0%" stopColor="#F3D58C" />
+      <stop offset="70%" stopColor="#DCA944" />
+      <stop offset="100%" stopColor="#BD8626" />
+    </radialGradient>
+  </defs>
+
+  <!-- ==================== EMBLEM (CENTERED, PROMINENT) ==================== -->
+  <g id="travelwise-emblem" transform="translate(600, 260)">
+    
+    <!-- 1. Rising Sun Disc -->
+    <circle cx="65" cy="-25" r="95" fill="url(#twSunGrad)" />
+
+    <!-- 2. Flight Trail Arc to Airplane -->
+    <path 
+      d="M 68 -28 C 120 -40, 185 -75, 235 -125" 
+      stroke="#0E4233" 
+      stroke-width="3.5" 
+      stroke-linecap="round" 
+      fill="none" 
+    />
+
+    <!-- 3. Ascending Airplane Silhouette -->
+    <g transform="translate(235, -125) rotate(42)">
+      <path 
+        d="M 0 -26 
+           L 5 -6 
+           L 26 2 
+           L 26 7 
+           L 5 4 
+           L 4 18 
+           L 12 23 
+           L 12 27 
+           L 0 24 
+           L -12 27 
+           L -12 23 
+           L -4 18 
+           L -5 4 
+           L -26 7 
+           L -26 2 
+           L -5 -6 
+           Z" 
+        fill="#0E4233" 
+      />
+    </g>
+
+    <!-- 4. Top Serif & Flowing Bar of 'T' Monogram -->
+    <path 
+      d="M -210 -155 
+         C -180 -155, -150 -160, -90 -160 
+         L 130 -160 
+         C 145 -160, 160 -150, 160 -138 
+         C 160 -126, 142 -122, 120 -122 
+         L -45 -122 
+         C -60 -122, -65 -110, -65 -90 
+         L -65 10 
+         L -125 10 
+         L -125 -100 
+         C -125 -128, -145 -132, -185 -132 
+         C -205 -132, -215 -142, -210 -155 
+         Z" 
+      fill="url(#twGreenGrad)" 
+    />
+
+    <!-- 5. Mountain Peaks with Crisp Snowcap Geometry -->
+    <g id="mountain-peaks">
+      <!-- Mountain Base Dark Green -->
+      <polygon points="50,-85 -55,45 165,45" fill="#0A3326" />
+      <polygon points="120,-35 45,45 195,45" fill="#0E4233" />
+
+      <!-- Left Snowy Ridge -->
+      <path 
+        d="M 50 -85 
+           L 30 -45 
+           L 45 -35 
+           L 20 -5 
+           L 35 10 
+           L -15 45 
+           L 50 -85 Z" 
+        fill="#FFFFFF" 
+      />
+
+      <!-- Right Mountain Snow Accent -->
+      <path 
+        d="M 120 -35 
+           L 105 -10 
+           L 118 0 
+           L 95 25 
+           L 135 45 
+           L 120 -35 Z" 
+        fill="#FFFFFF" 
+        opacity="0.9" 
+      />
+    </g>
+
+    <!-- 6. Pine Trees Silhouettes -->
+    <g id="pine-trees" fill="#062219">
+      <!-- Tree 1 -->
+      <polygon points="152,-15 146,5 158,5" />
+      <polygon points="152,0 143,20 161,20" />
+      <polygon points="152,15 140,40 164,40" />
+      <rect x="150" y="40" width="4" height="6" />
+
+      <!-- Tree 2 (Taller) -->
+      <polygon points="170,-30 163,-8 177,-8" />
+      <polygon points="170,-12 160,12 180,12" />
+      <polygon points="170,8 156,38 184,38" />
+      <rect x="168" y="38" width="4" height="8" />
+
+      <!-- Tree 3 -->
+      <polygon points="188,-10 182,10 194,10" />
+      <polygon points="188,6 179,28 197,28" />
+      <polygon points="188,22 176,44 200,44" />
+      <rect x="186" y="44" width="4" height="5" />
+    </g>
+
+    <!-- 7. 'W' Monogram Legs (Deep Forest Green) -->
+    <!-- Left W Stroke (flowing down from T stem) -->
+    <path 
+      d="M -125 -10 
+         L -55 175 
+         L 5 175 
+         L -55 20 
+         Z" 
+      fill="url(#twGreenGrad)" 
+    />
+
+    <!-- Middle-to-Right W Upward Stroke -->
+    <path 
+      d="M 2 175 
+         L 78 -20 
+         L 135 -20 
+         L 55 175 
+         Z" 
+      fill="url(#twGreenGrad)" 
+    />
+
+    <!-- Rightmost W Diagonal & Shelf -->
+    <path 
+      d="M 125 -15 
+         L 230 45 
+         L 180 45 
+         L 95 175 
+         L 45 175 
+         L 115 15 
+         L 235 45 
+         L 175 45 
+         Z" 
+      fill="url(#twGreenGrad)" 
+    />
+
+    <!-- 8. Sweeping Golden Ribbon Path / Road Through T & W -->
+    <path 
+      d="M -145 15 
+         C -110 5, -80 0, -40 2 
+         C 15 5, 55 2, 95 -10 
+         C 65 3, 30 18, -10 22 
+         C -60 27, -100 45, -70 95 
+         C -40 145, 10 170, 35 180 
+         C 15 170, -25 140, -45 105 
+         C -65 70, -35 50, 15 45 
+         C 75 40, 125 15, 155 -5 
+         C 120 18, 60 48, -15 48 
+         C -85 48, -125 25, -145 15 
+         Z" 
+      fill="url(#twGoldGrad)" 
+    />
+
+    <!-- Road Centerline Accent -->
+    <path 
+      d="M -135 16 
+         C -75 14, 0 14, 75 -2 
+         C 20 12, -45 32, -58 75 
+         C -70 115, -15 155, 30 175" 
+      stroke="#FFFFFF" 
+      stroke-width="3" 
+      stroke-linecap="round" 
+      stroke-dasharray="8 6" 
+      fill="none" 
+      opacity="0.85" 
+    />
+
+  </g>
+
+  <!-- ==================== TYPOGRAPHY / WORDMARK ==================== -->
+  <!-- "TRAVELWISE" -->
+  <g id="travelwise-wordmark" transform="translate(600, 585)">
+    <!-- TRAVEL (Deep Forest Green) -->
+    <text 
+      x="-375" 
+      y="0" 
+      font-family="'Playfair Display', 'Plus Jakarta Sans', 'Inter', sans-serif" 
+      font-size="94" 
+      font-weight="800" 
+      letter-spacing="0.08em" 
+      fill="#0E4233"
+    >
+      TRAV
+    </text>
+
+    <!-- Stylized 'E' and 'L' of TRAVEL -->
+    <text 
+      x="-85" 
+      y="0" 
+      font-family="'Playfair Display', 'Plus Jakarta Sans', 'Inter', sans-serif" 
+      font-size="94" 
+      font-weight="800" 
+      letter-spacing="0.08em" 
+      fill="#0E4233"
+    >
+      EL
+    </text>
+
+    <!-- Stylized Origami Paper Plane / Chevron Crossbar on 'A' -->
+    <g transform="translate(-185, -28)">
+      <!-- Custom 'A' geometry matching the modern brand font -->
+      <path 
+        d="M 28 -42 L 58 42 L 40 42 L 32 18 L 10 18 L 2 42 L -16 42 L 14 -42 Z M 21 -18 L 14 6 L 28 6 Z" 
+        fill="#0E4233" 
+      />
+      <!-- Golden Paper Plane Accent -->
+      <g transform="translate(18, 12) scale(0.65)">
+        <path d="M -22 10 L 22 -6 L -10 -16 Z" fill="url(#twGoldGrad)" />
+        <path d="M -22 10 L 22 -6 L -6 12 Z" fill="#9C7730" />
+      </g>
+    </g>
+
+    <!-- WISE (Warm Rich Gold) -->
+    <text 
+      x="85" 
+      y="0" 
+      font-family="'Playfair Display', 'Plus Jakarta Sans', 'Inter', sans-serif" 
+      font-size="94" 
+      font-weight="800" 
+      letter-spacing="0.08em" 
+      fill="url(#twGoldGrad)"
+    >
+      WISE
+    </text>
+  </g>
+
+  <!-- ==================== TAGLINE & FLANKING RULES ==================== -->
+  <g id="travelwise-tagline" transform="translate(600, 650)">
+    <!-- Left Golden Rule -->
+    <line x1="-420" y1="-7" x2="-230" y2="-7" stroke="url(#twGoldGrad)" stroke-width="2" stroke-linecap="round" />
+    
+    <!-- Tagline Text -->
+    <text 
+      x="0" 
+      y="0" 
+      text-anchor="middle" 
+      font-family="'Plus Jakarta Sans', 'Inter', sans-serif" 
+      font-size="24" 
+      font-weight="600" 
+      letter-spacing="0.32em" 
+      fill="#1A2822"
+    >
+      PLAN LESS. DISCOVER MORE.
+    </text>
+
+    <!-- Right Golden Rule -->
+    <line x1="230" y1="-7" x2="420" y2="-7" stroke="url(#twGoldGrad)" stroke-width="2" stroke-linecap="round" />
+  </g>
+</svg>

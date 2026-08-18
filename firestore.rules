@@ -1,0 +1,110 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Primary Admin check (Authoritative single admin UID)
+    function isAdmin() {
+      return request.auth != null && request.auth.uid == 'xXmpgQVQLZPto3d0kCsB0PXST7m1';
+    }
+
+    // Helper to check if request is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper to check if user is the resource owner
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles
+    match /users/{userId} {
+      allow read: if isAdmin() || isAuthenticated();
+      allow create, update, delete: if isAdmin() || isOwner(userId);
+    }
+
+    // User preferences
+    match /user_preferences/{userId} {
+      allow read: if isAdmin() || isOwner(userId);
+      allow create, update, delete: if isAdmin() || isOwner(userId);
+    }
+
+    // Trips collection and all nested subcollections
+    match /trips/{tripId} {
+      allow read: if isAdmin() || (isAuthenticated() && (resource == null || resource.data.user_id == request.auth.uid || resource.data.is_public == true));
+      allow create: if isAdmin() || (isAuthenticated() && request.resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+      
+      // Nested days, activities, itinerary items, documents, and vouchers
+      match /{document=**} {
+        allow read: if isAdmin() || isAuthenticated();
+        allow write: if isAdmin() || isAuthenticated();
+      }
+    }
+
+    // Saved places
+    match /saved_places/{saveId} {
+      allow read: if isAdmin() || (isAuthenticated() && (resource == null || resource.data.user_id == request.auth.uid));
+      allow create: if isAdmin() || (isAuthenticated() && request.resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+    }
+
+    // Files, documents & vouchers collection (if stored in separate root collection)
+    match /files/{fileId} {
+      allow read: if isAdmin() || (isAuthenticated() && (resource == null || resource.data.user_id == request.auth.uid));
+      allow create: if isAdmin() || (isAuthenticated() && request.resource.data.user_id == request.auth.uid);
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+    }
+
+    // Public places / catalog
+    match /places/{placeId} {
+      allow read: if true;
+      allow write: if isAdmin() || isAuthenticated();
+    }
+
+    // Community Posts
+    match /community_posts/{postId} {
+      allow read: if resource.data.visibility == 'public' || (isAuthenticated() && isOwner(resource.data.author_id)) || isAdmin();
+      allow create: if isAuthenticated() && request.resource.data.author_id == request.auth.uid;
+      allow update: if isAdmin() || (isAuthenticated() && (
+        isOwner(resource.data.author_id) ||
+        request.resource.data.diff(resource.data).affectedKeys().hasOnly(['likes_count', 'comments_count', 'saves_count'])
+      ));
+      allow delete: if isAdmin() || (isAuthenticated() && isOwner(resource.data.author_id));
+    }
+
+    // Community Likes
+    match /community_likes/{likeId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow delete: if isAuthenticated() && (resource.data.user_id == request.auth.uid || isAdmin());
+    }
+
+    // Community Comments
+    match /community_comments/{commentId} {
+      allow read: if true;
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow update, delete: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+    }
+
+    // Saved Community Posts
+    match /saved_community_posts/{saveId} {
+      allow read: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+      allow create: if isAuthenticated() && request.resource.data.user_id == request.auth.uid;
+      allow delete: if isAdmin() || (isAuthenticated() && resource.data.user_id == request.auth.uid);
+    }
+
+    // Community Reports
+    match /community_reports/{reportId} {
+      allow read: if isAdmin();
+      allow create: if isAuthenticated();
+      allow update, delete: if isAdmin();
+    }
+
+    // Catch-all rule ensuring the admin UID has unrestricted read & write access across the entire database
+    match /{document=**} {
+      allow read, write: if isAdmin();
+    }
+  }
+}
+
+

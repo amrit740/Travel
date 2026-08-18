@@ -1,0 +1,146 @@
+{
+  "entities": {
+    "users": {
+      "title": "User Profile",
+      "description": "User accounts and travel profiles",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "profile_image": { "type": "string" },
+        "role": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "name", "email"]
+    },
+    "trips": {
+      "title": "Trip Itinerary",
+      "description": "User created and AI generated trips",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "title": { "type": "string" },
+        "destination": { "type": "string" },
+        "destination_country": { "type": "string" },
+        "start_date": { "type": "string" },
+        "end_date": { "type": "string" },
+        "duration": { "type": "number" },
+        "travelers": { "type": "number" },
+        "traveler_type": { "type": "string" },
+        "total_budget": { "type": "number" },
+        "currency": { "type": "string" },
+        "travel_style": { "type": "array" },
+        "food_preferences": { "type": "array" },
+        "accommodation_preference": { "type": "string" },
+        "transportation_preference": { "type": "string" },
+        "interests": { "type": "array" },
+        "status": { "type": "string" },
+        "cover_image": { "type": "string" },
+        "summary": { "type": "string" },
+        "estimated_cost": { "type": "number" },
+        "travel_tips": { "type": "array" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "user_id", "title", "destination", "start_date", "end_date"]
+    },
+    "saved_places": {
+      "title": "Saved Places",
+      "description": "User bookmarked attractions and destinations",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "place_id": { "type": "string" },
+        "notes": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "user_id", "place_id"]
+    },
+    "community_posts": {
+      "title": "Community Posts",
+      "description": "User authored travel stories, tips, and shared itineraries",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "author_id": { "type": "string" },
+        "author_name": { "type": "string" },
+        "author_image": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "destination": { "type": "string" },
+        "trip_id": { "type": "string" },
+        "trip_snapshot": { "type": "object" },
+        "images": { "type": "array" },
+        "tags": { "type": "array" },
+        "post_type": { "type": "string" },
+        "visibility": { "type": "string" },
+        "likes_count": { "type": "number" },
+        "comments_count": { "type": "number" },
+        "saves_count": { "type": "number" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "author_id", "title", "content", "visibility"]
+    },
+    "community_likes": {
+      "title": "Community Likes",
+      "description": "Post like relationships",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "post_id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "user_name": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "post_id", "user_id"]
+    },
+    "community_comments": {
+      "title": "Community Comments",
+      "description": "Conversations on community posts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "post_id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "user_name": { "type": "string" },
+        "user_image": { "type": "string" },
+        "content": { "type": "string" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      },
+      "required": ["id", "post_id", "user_id", "content"]
+    },
+    "saved_community_posts": {
+      "title": "Saved Community Posts",
+      "description": "User bookmarked community posts",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "post_id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "post_id", "user_id"]
+    },
+    "community_reports": {
+      "title": "Community Reports",
+      "description": "Flagged posts for admin moderation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "post_id": { "type": "string" },
+        "reporter_id": { "type": "string" },
+        "reporter_name": { "type": "string" },
+        "reason": { "type": "string" },
+        "details": { "type": "string" },
+        "status": { "type": "string" },
+        "created_at": { "type": "string" }
+      },
+      "required": ["id", "post_id", "reporter_id", "reason"]
+    }
+  }
+}

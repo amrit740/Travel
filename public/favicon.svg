@@ -1,0 +1,73 @@
+<svg viewBox="0 0 512 512" width="512" height="512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="512" height="512" rx="128" fill="#0B3D2E"/>
+  <rect x="12" y="12" width="488" height="488" rx="116" stroke="#C8A96B" stroke-width="4" stroke-opacity="0.4"/>
+  
+  <defs>
+    <linearGradient id="twFavGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stopColor="#F5E8C4" />
+      <stop offset="50%" stopColor="#D4AF37" />
+      <stop offset="100%" stopColor="#9C7730" />
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(256, 270) scale(0.9)">
+    <!-- Rising Sun Disc -->
+    <circle cx="55" cy="-20" r="80" fill="url(#twFavGold)" />
+
+    <!-- Flight Arc to Airplane -->
+    <path 
+      d="M 58 -22 C 100 -35, 155 -65, 200 -105" 
+      stroke="#F7F5EF" 
+      stroke-width="3" 
+      stroke-linecap="round" 
+      fill="none" 
+    />
+    <!-- Ascending Airplane Silhouette -->
+    <g transform="translate(200, -105) rotate(42)">
+      <path 
+        d="M 0 -22 L 4 -5 L 22 2 L 22 6 L 4 4 L 3 15 L 10 19 L 10 23 L 0 20 L -10 23 L -10 19 L -3 15 L -4 4 L -22 6 L -22 2 L -4 -5 Z" 
+        fill="#F7F5EF" 
+      />
+    </g>
+
+    <!-- Top Serif & Flowing Bar of 'T' Monogram -->
+    <path 
+      d="M -180 -135 C -150 -135, -125 -140, -75 -140 L 110 -140 C 122 -140, 135 -132, 135 -122 C 135 -112, 120 -108, 102 -108 L -38 -108 C -52 -108, -55 -98, -55 -80 L -55 10 L -108 10 L -108 -88 C -108 -112, -125 -115, -160 -115 C -176 -115, -184 -124, -180 -135 Z" 
+      fill="#FFFFFF" 
+    />
+
+    <!-- Mountain Peaks -->
+    <polygon points="40,-70 -48,38 140,38" fill="#062219" />
+    <polygon points="100,-28 36,38 165,38" fill="#082C21" />
+
+    <!-- Snowy Ridge -->
+    <path d="M 40 -70 L 24 -36 L 36 -28 L 16 -4 L 28 8 L -12 38 L 40 -70 Z" fill="#FFFFFF" />
+    <path d="M 100 -28 L 88 -8 L 98 0 L 80 20 L 115 38 L 100 -28 Z" fill="#FFFFFF" opacity="0.9" />
+
+    <!-- Pine Trees -->
+    <g fill="#FFFFFF">
+      <polygon points="128,-12 123,4 133,4" />
+      <polygon points="128,0 120,16 136,16" />
+      <polygon points="128,12 118,32 138,32" />
+      
+      <polygon points="144,-24 138,-6 150,-6" />
+      <polygon points="144,-10 135,10 153,10" />
+      <polygon points="144,6 132,30 156,30" />
+
+      <polygon points="160,-8 155,8 165,8" />
+      <polygon points="160,5 152,22 168,22" />
+      <polygon points="160,18 150,36 170,36" />
+    </g>
+
+    <!-- 'W' Monogram Legs -->
+    <path d="M -108 -8 L -48 150 L 5 150 L -48 18 Z" fill="#FFFFFF" />
+    <path d="M 2 150 L 68 -16 L 116 -16 L 48 150 Z" fill="#FFFFFF" />
+    <path d="M 108 -12 L 195 38 L 155 38 L 82 150 L 40 150 L 98 12 L 200 38 L 150 38 Z" fill="#FFFFFF" />
+
+    <!-- Sweeping Golden Ribbon Path / Road Through T & W -->
+    <path 
+      d="M -125 12 C -95 4, -70 0, -35 2 C 12 4, 48 2, 82 -8 C 55 2, 25 15, -8 18 C -52 22, -88 38, -60 80 C -35 122, 8 145, 30 152 C 12 145, -20 120, -38 90 C -55 60, -30 42, 12 38 C 65 34, 108 12, 134 -4 C 104 15, 52 40, -12 40 C -72 40, -108 20, -125 12 Z" 
+      fill="url(#twFavGold)" 
+    />
+  </g>
+</svg>

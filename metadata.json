@@ -1,0 +1,6 @@
+{
+  "name": "TravelWise App",
+  "description": "Explore India. Discover all 28 states, 8 union territories, heritage landmarks, hill retreats, beaches, and personalized India itineraries with TravelWise.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
