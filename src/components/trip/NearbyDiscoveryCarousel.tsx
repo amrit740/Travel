@@ -14,6 +14,7 @@ import {
 import { useCurrentTrip } from '../../contexts/TripContext';
 import { formatCurrency } from '../../lib/utils';
 import { PersonalizedPlace } from '../../types';
+import { PlaceImage } from '../common/PlaceImage';
 
 interface NearbyDiscoveryCarouselProps {
   onAddPlace?: (dayId: string, place: PersonalizedPlace) => Promise<void>;
@@ -97,22 +98,33 @@ export const NearbyDiscoveryCarousel: React.FC<NearbyDiscoveryCarouselProps> = (
             >
               {/* Image with Category & Match Score Overlay */}
               <div className="relative h-44 w-full overflow-hidden bg-slate-100">
-                <img
+                <PlaceImage
+                  name={place.name}
+                  destination={place.destination || currentTrip.destination}
+                  category={place.category}
                   src={place.image}
                   alt={place.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full"
+                  photos={place.photos}
+                  gallery={place.gallery}
+                  authorAttributions={place.authorAttributions}
+                  address={place.address}
+                  latitude={place.latitude}
+                  longitude={place.longitude}
+                  showGalleryButton={true}
+                  showVerifiedBadge={false}
                 />
 
                 {/* Match Score Badge */}
                 {place.matchScore && (
-                  <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-xl bg-orange-600/90 backdrop-blur-xs text-white text-[11px] font-extrabold flex items-center gap-1 shadow-sm">
+                  <div className="absolute top-2.5 right-2.5 px-2.5 py-1 rounded-xl bg-orange-600/90 backdrop-blur-xs text-white text-[11px] font-extrabold flex items-center gap-1 shadow-sm z-10">
                     <Sparkles className="w-3 h-3 text-orange-200" />
                     <span>{place.matchScore}% Match</span>
                   </div>
                 )}
 
                 {/* Category Pill */}
-                <div className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold">
+                <div className="absolute bottom-2.5 left-2.5 px-2.5 py-0.5 rounded-lg bg-black/60 backdrop-blur-xs text-white text-[10px] font-bold z-10">
                   {place.category}
                 </div>
               </div>

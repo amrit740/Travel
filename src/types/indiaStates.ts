@@ -10,6 +10,10 @@ export interface StateAttraction {
   longitude: number;
   accessibility: 'Verified' | 'Available' | 'Unknown';
   official_info_hint?: string;
+  image?: string;
+  place_id?: string;
+  photos?: Array<{ url: string; authorAttributions?: Array<{ displayName: string; uri?: string }> }>;
+  gallery?: string[];
 }
 
 export interface StateDestination {
@@ -30,6 +34,9 @@ export interface StateDestination {
   latitude: number;
   longitude: number;
   image: string;
+  place_id?: string;
+  photos?: Array<{ url: string; authorAttributions?: Array<{ displayName: string; uri?: string }> }>;
+  gallery?: string[];
   attractions: StateAttraction[];
 }
 

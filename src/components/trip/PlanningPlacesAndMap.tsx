@@ -30,6 +30,7 @@ import { Place, MarkedPlace, DestinationInfo } from '../../types';
 import { apiPlaces } from '../../services/api';
 import { getDestinationMetadata } from '../../lib/tripPersonalization';
 import { formatCurrency } from '../../lib/utils';
+import { PlaceImage } from '../common/PlaceImage';
 
 interface PlanningPlacesAndMapProps {
   destination: string;
@@ -812,20 +813,26 @@ export const PlanningPlacesAndMap: React.FC<PlanningPlacesAndMapProps> = ({
                     >
                       {/* Place Photo with Overlay Badges */}
                       <div className="relative h-36 w-full overflow-hidden bg-[#E3E7E2]">
-                        <img
+                        <PlaceImage
+                          name={p.name}
+                          destination={p.destination || destination}
+                          category={p.category}
                           src={p.image}
                           alt={p.name}
-                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                          loading="lazy"
-                          onError={(e) => {
-                            (e.target as HTMLImageElement).src =
-                              'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80';
-                          }}
+                          className="w-full h-full"
+                          photos={p.photos}
+                          gallery={p.gallery}
+                          authorAttributions={p.authorAttributions}
+                          address={p.address}
+                          latitude={p.latitude}
+                          longitude={p.longitude}
+                          showGalleryButton={true}
+                          showVerifiedBadge={false}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-[#071F18]/90 via-[#071F18]/20 to-transparent" />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#071F18]/90 via-[#071F18]/20 to-transparent pointer-events-none" />
 
                         {/* Top Badges */}
-                        <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+                        <div className="absolute top-2 left-2 right-2 flex items-center justify-between z-10 pointer-events-none">
                           <span
                             className="px-2 py-0.5 rounded-full text-[10px] font-bold text-white shadow-xs backdrop-blur-md"
                             style={{ backgroundColor: getCategoryColor(p.category) }}
@@ -839,7 +846,7 @@ export const PlanningPlacesAndMap: React.FC<PlanningPlacesAndMapProps> = ({
                         </div>
 
                         {/* Bottom Photo Title */}
-                        <div className="absolute bottom-2 left-2.5 right-2.5">
+                        <div className="absolute bottom-2 left-2.5 right-2.5 z-10 pointer-events-none">
                           <h5 className="text-white font-bold text-xs line-clamp-1 leading-tight drop-shadow-xs">
                             {p.name}
                           </h5>

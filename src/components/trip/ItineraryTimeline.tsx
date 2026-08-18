@@ -30,6 +30,7 @@ import {
 } from 'lucide-react';
 import { ItineraryDay, Activity } from '../../types';
 import { formatCurrency } from '../../lib/utils';
+import { PlaceImage } from '../common/PlaceImage';
 
 interface ItineraryTimelineProps {
   days: ItineraryDay[];
@@ -284,8 +285,28 @@ export const ItineraryTimeline: React.FC<ItineraryTimelineProps> = ({
                   {/* Timeline dot */}
                   <div className="absolute -left-[30px] sm:-left-[38px] top-6 w-5 h-5 rounded-full bg-white border-4 border-[#0B3D2E] shadow-xs flex items-center justify-center" />
 
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                    <div className="space-y-2 flex-1">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+                    {/* Activity Image */}
+                    <div className="w-full sm:w-36 h-28 sm:h-28 rounded-xl overflow-hidden shrink-0 border border-[#E3E7E2] shadow-xs">
+                      <PlaceImage
+                        name={activity.name}
+                        destination={currentDay.title}
+                        category={activity.category}
+                        src={activity.image}
+                        alt={activity.name}
+                        className="w-full h-full"
+                        photos={activity.photos}
+                        gallery={activity.gallery}
+                        authorAttributions={activity.authorAttributions}
+                        address={activity.location}
+                        latitude={activity.latitude}
+                        longitude={activity.longitude}
+                        showGalleryButton={true}
+                        showVerifiedBadge={false}
+                      />
+                    </div>
+
+                    <div className="space-y-2 flex-1 min-w-0">
                       {/* Meta Tags (Time, Category, Cost) */}
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0B3D2E] bg-white border border-[#E3E7E2] px-2.5 py-1 rounded-lg">

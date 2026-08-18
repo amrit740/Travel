@@ -83,6 +83,39 @@ export interface User {
   updated_at?: string;
 }
 
+export interface AuthorAttribution {
+  displayName: string;
+  uri?: string;
+  photoUri?: string;
+}
+
+export interface PlacePhoto {
+  url: string;
+  authorAttributions?: AuthorAttribution[];
+  width?: number;
+  height?: number;
+  caption?: string;
+  source?: 'google_places' | 'verified_catalog' | 'destination_registry' | 'fallback';
+}
+
+export interface ResolvedPlaceImage {
+  placeId: string;
+  name: string;
+  region?: string;
+  destination: string;
+  country: string;
+  heroImage: string;
+  photos: PlacePhoto[];
+  gallery: string[];
+  authorAttributions?: AuthorAttribution[];
+  latitude?: number;
+  longitude?: number;
+  formattedAddress?: string;
+  category?: string;
+  isExactMatch: boolean;
+  source?: 'google_places' | 'verified_catalog' | 'fallback';
+}
+
 export interface UserPreferences {
   id: string;
   user_id: string;
@@ -109,6 +142,10 @@ export interface Activity {
   latitude: number;
   longitude: number;
   image?: string;
+  place_id?: string;
+  photos?: PlacePhoto[];
+  gallery?: string[];
+  authorAttributions?: AuthorAttribution[];
   booking_url?: string;
   notes?: string;
   rating?: number;
@@ -177,6 +214,10 @@ export interface Place {
   price_level: '$' | '$$' | '$$$' | '$$$$';
   estimated_cost: number;
   image: string;
+  place_id?: string;
+  photos?: PlacePhoto[];
+  gallery?: string[];
+  authorAttributions?: AuthorAttribution[];
   address: string;
   opening_hours?: string;
   best_time_to_visit?: string;
@@ -227,6 +268,10 @@ export interface MarkedPlace {
   latitude: number;
   longitude: number;
   image?: string;
+  place_id?: string;
+  photos?: PlacePhoto[];
+  gallery?: string[];
+  authorAttributions?: AuthorAttribution[];
   address?: string;
   rating?: number;
   estimated_cost?: number;
@@ -465,6 +510,10 @@ export interface DestinationInfo {
   tagline: string;
   description: string;
   image: string;
+  place_id?: string;
+  photos?: PlacePhoto[];
+  gallery?: string[];
+  authorAttributions?: AuthorAttribution[];
   popular_for: string[];
   best_season: string;
   avg_budget_per_day: number;

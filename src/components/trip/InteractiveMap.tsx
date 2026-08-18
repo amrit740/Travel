@@ -196,21 +196,29 @@ export const InteractiveMap: React.FC<InteractiveMapProps> = ({
             act.name + ', ' + (act.location || destination || '')
           )}`;
 
+          const imgUrl = act.image || `https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=400&q=80`;
+
           const popupContent = `
-            <div style="font-family: system-ui, -apple-system, sans-serif; min-width: 200px; padding: 4px;">
-              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
-                <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; background: ${getCategoryColor(act.category)}20; color: ${getCategoryColor(act.category)}; padding: 2px 6px; border-radius: 4px;">
+            <div style="font-family: system-ui, -apple-system, sans-serif; min-width: 220px; max-width: 240px; padding: 2px;">
+              <div style="position: relative; height: 100px; border-radius: 8px; overflow: hidden; margin-bottom: 6px; background: #f1f5f9;">
+                <img src="${imgUrl}" alt="${act.name}" style="width: 100%; height: 100%; object-fit: cover;" onerror="this.src='https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=400&q=80'" />
+                <span style="position: absolute; top: 4px; left: 4px; font-size: 9px; font-weight: 700; text-transform: uppercase; background: rgba(15,23,42,0.85); color: #ffffff; padding: 2px 6px; border-radius: 4px;">
                   ${act.category}
+                </span>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;">
+                <span style="font-size: 10px; font-weight: 700; color: ${getCategoryColor(act.category)};">
+                  Spot #${idx + 1}
                 </span>
                 <span style="font-weight: 700; font-size: 11px; color: #0B3D2E;">₹${act.estimated_cost || 0}</span>
               </div>
               <h4 style="font-size: 13px; font-weight: 700; margin: 0 0 4px 0; color: #0f172a; line-height: 1.2;">
-                ${idx + 1}. ${act.name}
+                ${act.name}
               </h4>
               <div style="font-size: 11px; color: #64748b; margin-bottom: 6px;">
                 ⏰ ${act.start_time || 'Flexible'} • 📍 ${act.location || destination || ''}
               </div>
-              <a href="${googleMapsDirUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; font-size: 11px; font-weight: 700; color: #ffffff; background: #0B3D2E; padding: 5px 8px; border-radius: 6px; text-decoration: none; text-align: center; width: 100%; box-sizing: border-box;">
+              <a href="${googleMapsDirUrl}" target="_blank" rel="noopener noreferrer" style="display: inline-block; font-size: 11px; font-weight: 700; color: #ffffff; background: #0B3D2E; padding: 6px 8px; border-radius: 6px; text-decoration: none; text-align: center; width: 100%; box-sizing: border-box;">
                 Get Directions ↗
               </a>
             </div>

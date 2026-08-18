@@ -31,6 +31,8 @@ import { useCurrentTrip } from '../contexts/TripContext';
 import { DESTINATIONS_KNOWLEDGE, scorePlaceForTrip } from '../lib/tripPersonalization';
 import { formatCurrency } from '../lib/utils';
 import { ALL_INDIA_STATES } from '../data/indiaStates';
+import { PlaceImage } from '../components/common/PlaceImage';
+import { DestinationGallerySection } from '../components/common/DestinationGallerySection';
 
 const CATEGORY_MAPPINGS: { [key: string]: { label: string; backendCat?: string; color: string; bg: string } } = {
   'All': { label: 'All Spots', color: 'text-[#0f172a]', bg: 'bg-[#0f172a] text-[#f8fafc]' },
@@ -494,6 +496,13 @@ export const ExplorePage: React.FC = () => {
         </div>
       )}
 
+      {/* Destination Photo Gallery */}
+      <DestinationGallerySection
+        destinationName={selectedDestination}
+        stateOrRegion={activeDestInfo?.region}
+        heroImage={activeDestInfo?.hero_image}
+      />
+
       {/* Category Tabs */}
       <div className="flex items-center gap-2 overflow-x-auto pb-1">
         {Object.keys(CATEGORY_MAPPINGS).map((catKey) => {
@@ -554,22 +563,30 @@ export const ExplorePage: React.FC = () => {
                 className="group bg-white rounded-3xl border border-[#e2e8f0] overflow-hidden hover:shadow-xl transition-all flex flex-col justify-between"
               >
                 <div className="relative h-48 overflow-hidden bg-slate-100">
-                  <img
-                    src={
-                      place.image ||
-                      'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80'
-                    }
+                  <PlaceImage
+                    name={place.name}
+                    destination={place.destination || selectedDestination}
+                    category={place.category}
+                    src={place.image}
                     alt={place.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full"
+                    photos={place.photos}
+                    gallery={place.gallery}
+                    authorAttributions={place.authorAttributions}
+                    address={place.address}
+                    latitude={place.latitude}
+                    longitude={place.longitude}
+                    showGalleryButton={true}
+                    showVerifiedBadge={true}
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-transparent pointer-events-none" />
 
-                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold">
+                  <span className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-bold z-10">
                     {place.category}
                   </span>
 
                   {scored?.matchScore && (
-                    <span className="absolute top-3 right-12 px-2.5 py-1 rounded-lg bg-[#0f172a]/90 backdrop-blur-md text-[#C59B27] text-[10px] font-extrabold flex items-center gap-1 border border-[#C59B27]/30">
+                    <span className="absolute top-3 right-12 px-2.5 py-1 rounded-lg bg-[#0f172a]/90 backdrop-blur-md text-[#C59B27] text-[10px] font-extrabold flex items-center gap-1 border border-[#C59B27]/30 z-10">
                       <Sparkles className="w-3 h-3 text-[#C59B27]" />
                       <span>{scored.matchScore}% Match</span>
                     </span>
@@ -578,13 +595,13 @@ export const ExplorePage: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => toggleSavePlace(place.id)}
-                    className="absolute top-3 right-3 p-2 rounded-xl bg-white/90 backdrop-blur-md text-slate-700 hover:text-[#C59B27] transition-colors shadow-xs"
+                    className="absolute top-3 right-3 p-2 rounded-xl bg-white/90 backdrop-blur-md text-slate-700 hover:text-[#C59B27] transition-colors shadow-xs z-10"
                     title={isSaved ? 'Saved in Bookmarks' : 'Bookmark Place'}
                   >
                     <Bookmark className={`w-4 h-4 ${isSaved ? 'fill-[#C59B27] text-[#C59B27]' : ''}`} />
                   </button>
 
-                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs">
+                  <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-white text-xs z-10 pointer-events-none">
                     <span className="flex items-center gap-1 font-bold bg-[#C59B27] px-2 py-0.5 rounded-md text-[#0f172a]">
                       <Star className="w-3 h-3 fill-[#0f172a] text-[#0f172a]" />
                       {place.rating}
@@ -672,18 +689,29 @@ export const ExplorePage: React.FC = () => {
               <div className="space-y-4 flex-1 flex flex-col justify-between">
                 <div className="space-y-3">
                   <div className="relative h-44 rounded-2xl overflow-hidden bg-slate-100">
-                    <img
-                      src={activeMapPlace.image || 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=600&q=80'}
+                    <PlaceImage
+                      name={activeMapPlace.name}
+                      destination={activeMapPlace.destination || selectedDestination}
+                      category={activeMapPlace.category}
+                      src={activeMapPlace.image}
                       alt={activeMapPlace.name}
-                      className="w-full h-full object-cover"
+                      className="w-full h-full"
+                      photos={activeMapPlace.photos}
+                      gallery={activeMapPlace.gallery}
+                      authorAttributions={activeMapPlace.authorAttributions}
+                      address={activeMapPlace.address}
+                      latitude={activeMapPlace.latitude}
+                      longitude={activeMapPlace.longitude}
+                      showGalleryButton={true}
+                      showVerifiedBadge={true}
                     />
-                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 text-white text-[10px] font-bold">
+                    <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-slate-900/80 text-white text-[10px] font-bold z-10">
                       {activeMapPlace.category}
                     </span>
                     <button
                       type="button"
                       onClick={() => toggleSavePlace(activeMapPlace.id)}
-                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-white/90 text-slate-700 hover:text-[#C59B27]"
+                      className="absolute top-2 right-2 p-1.5 rounded-lg bg-white/90 text-slate-700 hover:text-[#C59B27] z-10 shadow-xs"
                     >
                       <Bookmark
                         className={`w-4 h-4 ${

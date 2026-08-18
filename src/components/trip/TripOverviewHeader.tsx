@@ -16,6 +16,7 @@ import {
 } from 'lucide-react';
 import { Trip, WeatherInfo } from '../../types';
 import { formatCurrency, formatDate } from '../../lib/utils';
+import { getFastClientPlaceFallback } from '../../services/placeImageClient';
 
 interface TripOverviewHeaderProps {
   trip: Trip;
@@ -45,10 +46,11 @@ export const TripOverviewHeader: React.FC<TripOverviewHeaderProps> = ({
         <img
           src={
             trip.cover_image ||
-            'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1600&q=80'
+            getFastClientPlaceFallback(trip.destination, trip.destination)
           }
           alt={trip.destination}
           className="w-full h-full object-cover object-center opacity-30 scale-105 transition-transform duration-700"
+          referrerPolicy="no-referrer"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#071F18] via-[#0B3D2E]/85 to-[#0B3D2E]/40" />
       </div>

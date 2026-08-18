@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 import { CreateTripInput, Activity, BudgetBreakdown } from '../../src/types/index';
 import { SEED_PLACES } from '../db/database';
+import { PlaceImageService } from './placeImageService';
 
 // Initialize Gemini Client
 const getGeminiClient = () => {
@@ -17,6 +18,58 @@ const getGeminiClient = () => {
     },
   });
 };
+
+/**
+ * Executes a Gemini request with automatic retries for transient spikes (503 / 429)
+ * and seamless fallback across recommended Gemini 3 model tiers.
+ */
+async function generateContentWithFallbackAndRetry(
+  ai: GoogleGenAI,
+  prompt: string,
+  config?: { responseMimeType?: string; temperature?: number }
+): Promise<string | null> {
+  const modelTiers = ['gemini-3.7-flash', 'gemini-3.1-flash-lite', 'gemini-flash-latest'];
+
+  for (const model of modelTiers) {
+    for (let attempt = 1; attempt <= 2; attempt++) {
+      try {
+        const response = await ai.models.generateContent({
+          model,
+          contents: prompt,
+          config: {
+            responseMimeType: config?.responseMimeType || 'application/json',
+            temperature: config?.temperature ?? 0.7,
+          },
+        });
+
+        const text = response.text?.trim();
+        if (text) {
+          return text;
+        }
+      } catch (err: any) {
+        const errorMessage = err?.message || String(err);
+        const isTemporary =
+          errorMessage.includes('503') ||
+          errorMessage.includes('UNAVAILABLE') ||
+          errorMessage.includes('high demand') ||
+          errorMessage.includes('429') ||
+          errorMessage.includes('RESOURCE_EXHAUSTED') ||
+          errorMessage.includes('quota') ||
+          errorMessage.includes('overloaded');
+
+        if (isTemporary && attempt === 1) {
+          // Brief exponential backoff before retry
+          await new Promise((resolve) => setTimeout(resolve, 800));
+          continue;
+        }
+        // Proceed to next model in fallback cascade
+        break;
+      }
+    }
+  }
+
+  return null;
+}
 
 export interface GeneratedDayPlan {
   day_number: number;
@@ -129,30 +182,49 @@ Expected JSON Structure:
   ]
 }`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.7-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0.7,
-        },
+      const text = await generateContentWithFallbackAndRetry(ai, prompt, {
+        responseMimeType: 'application/json',
+        temperature: 0.7,
       });
 
-      const text = response.text?.trim();
       if (text) {
         // Strip markdown backticks if present
-        const cleaned = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
         const parsed = JSON.parse(cleaned) as AITripGenerationResult;
 
         // Verify minimal integrity
         if (parsed.title && Array.isArray(parsed.days) && parsed.days.length > 0) {
-          // Assign nice Unsplash cover image based on destination
           parsed.cover_image = getCoverImageForDestination(input.destination);
+
+          // Enrich every activity with exact place photos, coordinates, and place ID
+          parsed.days = parsed.days.map((d) => ({
+            ...d,
+            activities: (d.activities || []).map((a) => {
+              const resolved = PlaceImageService.resolvePlaceSync(
+                a.name,
+                input.destination,
+                a.category,
+                a.latitude,
+                a.longitude
+              );
+              return {
+                ...a,
+                image: resolved.heroImage || a.image,
+                place_id: resolved.placeId,
+                photos: resolved.photos,
+                gallery: resolved.gallery,
+                authorAttributions: resolved.authorAttributions,
+                latitude: a.latitude || resolved.latitude,
+                longitude: a.longitude || resolved.longitude,
+              };
+            }),
+          }));
+
           return parsed;
         }
       }
-    } catch (err) {
-      console.warn('Gemini API call failed, using intelligent fallback generator:', err);
+    } catch {
+      // Gracefully fall back to deterministic generator
     }
   }
 
@@ -191,22 +263,17 @@ Return ONLY a JSON object:
   "notes": "Insider tip"
 }`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.7-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0.8,
-        },
+      const text = await generateContentWithFallbackAndRetry(ai, prompt, {
+        responseMimeType: 'application/json',
+        temperature: 0.8,
       });
 
-      const text = response.text?.trim();
       if (text) {
-        const cleaned = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
         return JSON.parse(cleaned);
       }
-    } catch (err) {
-      console.warn('Gemini single activity regeneration error, using fallback:', err);
+    } catch {
+      // Fall through to deterministic alternative
     }
   }
 
@@ -280,22 +347,17 @@ Return ONLY a JSON response:
   ]
 }`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.7-flash',
-        contents: prompt,
-        config: {
-          responseMimeType: 'application/json',
-          temperature: 0.7,
-        },
+      const text = await generateContentWithFallbackAndRetry(ai, prompt, {
+        responseMimeType: 'application/json',
+        temperature: 0.7,
       });
 
-      const text = response.text?.trim();
       if (text) {
-        const cleaned = text.replace(/^```json\s*/, '').replace(/\s*```$/, '');
+        const cleaned = text.replace(/^```(?:json)?\s*/i, '').replace(/\s*```$/, '');
         return JSON.parse(cleaned);
       }
-    } catch (err) {
-      console.warn('Gemini chat error, using rule-based response:', err);
+    } catch {
+      // Fall through to rule-based conversational assistant fallback
     }
   }
 
@@ -613,6 +675,9 @@ function generateFallbackTrip(input: CreateTripInput, duration: number): AITripG
     const theme = activityThemes[i % activityThemes.length];
     const dayActs: GeneratedDayPlan['activities'] = theme.acts.map((a, aIdx) => {
       totalEstCost += a.cost;
+      const actLat = placeCoords.lat + (Math.random() - 0.5) * 0.04;
+      const actLng = placeCoords.lng + (Math.random() - 0.5) * 0.04;
+      const resolved = PlaceImageService.resolvePlaceSync(a.name, dest, a.cat, actLat, actLng);
       return {
         name: a.name,
         description: a.desc,
@@ -621,8 +686,13 @@ function generateFallbackTrip(input: CreateTripInput, duration: number): AITripG
         duration: a.dur,
         estimated_cost: a.cost,
         location: a.loc,
-        latitude: placeCoords.lat + (Math.random() - 0.5) * 0.04,
-        longitude: placeCoords.lng + (Math.random() - 0.5) * 0.04,
+        latitude: resolved.latitude || actLat,
+        longitude: resolved.longitude || actLng,
+        image: resolved.heroImage,
+        place_id: resolved.placeId,
+        photos: resolved.photos,
+        gallery: resolved.gallery,
+        authorAttributions: resolved.authorAttributions,
         notes: 'Pre-booking advised during peak weekend hours.',
       };
     });
@@ -734,32 +804,6 @@ function getCoordinatesForDestination(dest: string): { lat: number; lng: number 
 }
 
 function getCoverImageForDestination(dest: string): string {
-  const d = dest.toLowerCase();
-  if (d.includes('goa'))
-    return 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('agra') || d.includes('taj mahal'))
-    return 'https://images.unsplash.com/photo-1564507592333-c60657eea523?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('manali') || d.includes('himachal'))
-    return 'https://images.unsplash.com/photo-1626621341517-bbf3d9990a23?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('kolkata'))
-    return 'https://images.unsplash.com/photo-1558431382-27e303142255?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('darjeeling'))
-    return 'https://images.unsplash.com/photo-1544735716-392fe2489ffa?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('jaipur'))
-    return 'https://images.unsplash.com/photo-1477587458883-47145ed94245?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('delhi'))
-    return 'https://images.unsplash.com/photo-1587474260584-136574528ed5?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('mumbai'))
-    return 'https://images.unsplash.com/photo-1570168007204-dfb528c6958f?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('kerala'))
-    return 'https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('varanasi'))
-    return 'https://images.unsplash.com/photo-1561361513-2d000a50f0dc?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('sikkim') || d.includes('gangtok'))
-    return 'https://images.unsplash.com/photo-1589182373726-e4f658ab50f0?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('ladakh') || d.includes('leh'))
-    return 'https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80';
-  if (d.includes('andaman'))
-    return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1200&q=80';
-  return 'https://images.unsplash.com/photo-1512343879784-a960bf40e7f2?auto=format&fit=crop&w=1200&q=80';
+  const resolved = PlaceImageService.resolvePlaceSync(dest, dest);
+  return resolved.heroImage || 'https://images.unsplash.com/photo-1524492412937-b28074a5d7da?auto=format&fit=crop&w=1200&q=80';
 }

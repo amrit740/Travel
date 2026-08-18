@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { db, SEED_DESTINATIONS } from '../db/database';
 import { requireAuth, AuthenticatedRequest } from '../middleware/authMiddleware';
 import { PlaceDiscoveryService } from '../services/placeDiscoveryService';
+import { PlaceImageService } from '../services/placeImageService';
 import { ALL_INDIA_STATES } from '../../src/data/indiaStates';
 import { CORE_INDIAN_DESTINATIONS } from '../../src/lib/indiaLocationService';
 import { DestinationInfo } from '../../src/types';
@@ -114,6 +115,42 @@ router.post('/saved-places', requireAuth, (req: AuthenticatedRequest, res) => {
   const saved = db.savePlace(req.user.id, place_id, notes);
   db.recordEvent('place_saved', req.user.id, { place_id });
   return res.status(201).json(saved);
+});
+
+// Dynamic Place-Specific Image Resolution (Google Places API New + Verified Catalog + Multi-Photo Fallback)
+router.post('/places/resolve-image', async (req, res) => {
+  try {
+    const { name, destination, region, category, latitude, longitude } = req.body;
+    if (!name) {
+      return res.status(400).json({ error: 'Place name is required.' });
+    }
+
+    const resolved = await PlaceImageService.resolvePlaceAsync({
+      name: String(name),
+      destination: destination ? String(destination) : undefined,
+      region: region ? String(region) : undefined,
+      category: category ? String(category) : undefined,
+      latitude: latitude ? Number(latitude) : undefined,
+      longitude: longitude ? Number(longitude) : undefined,
+    });
+
+    return res.json(resolved);
+  } catch (err: any) {
+    console.error('Error resolving place image:', err);
+    return res.status(500).json({ error: 'Failed to resolve place image' });
+  }
+});
+
+// Destination Multi-Photo Gallery & Curated Spot Images
+router.get('/destinations/:name/gallery', (req, res) => {
+  try {
+    const destinationName = req.params.name;
+    const galleryData = PlaceImageService.getDestinationGallery(destinationName);
+    return res.json(galleryData);
+  } catch (err: any) {
+    console.error('Error fetching destination gallery:', err);
+    return res.status(500).json({ error: 'Failed to fetch destination gallery' });
+  }
 });
 
 // Remove bookmark

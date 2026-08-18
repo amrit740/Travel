@@ -1,6 +1,7 @@
 import { Place, DestinationInfo } from '../../src/types/index';
 import { ALL_INDIA_STATES, getStateByName, getStateById } from '../../src/data/indiaStates';
 import { CORE_INDIAN_DESTINATIONS } from '../../src/lib/indiaLocationService';
+import { PlaceImageService } from './placeImageService';
 
 // Category mapping helper
 export type PlaceCategoryType = 'Attraction' | 'Restaurant' | 'Hotel' | 'Hidden Gem';
@@ -1187,7 +1188,17 @@ export class PlaceDiscoveryService {
       });
     }
 
-    return filtered;
+    return filtered.map((p) => {
+      const resolved = PlaceImageService.resolvePlaceSync(p.name, p.destination, p.category, p.latitude, p.longitude);
+      return {
+        ...p,
+        image: resolved.heroImage || p.image,
+        place_id: resolved.placeId,
+        photos: resolved.photos,
+        gallery: resolved.gallery,
+        authorAttributions: resolved.authorAttributions,
+      };
+    });
   }
 
   /**
